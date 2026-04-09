@@ -25,7 +25,7 @@ pipeline {
     post {
         failure {
             // Telegram Notification Example
-            sh "curl -s -X POST https://api.telegram.org/bot${BOT_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d text='❌ Build Failed for Laravel Project!'"
+            sh "wget -s -X POST https://api.telegram.org/bot${BOT_TOKEN}/sendMessage -d chat_id=${CHAT_ID} -d text='❌ Build Failed for Laravel Project!'"
         }
         success {
             echo 'Deployment successful!'
