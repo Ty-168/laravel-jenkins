@@ -1,0 +1,67 @@
+- name: Deploy Laravel Project
+  hosts: webserver
+  become: yes
+  tasks:
+    - name: Install Nginx and PHP-FPM
+      apt:
+        name:
+          - nginx
+          - php8.4-fpm
+        state: present
+        update_cache: yes
+
+    - name: Pull latest code from Git
+      git:
+        repo: 'https://github.com/Ty-168/laravel-jenkins.git'
+        dest: /var/www/lim_kity
+        version: main
+
+    - name: Install Composer dependencies
+      composer:
+        command: install
+        working_dir: /var/www/lim_kity
+
+    - name: Run Migrations
+      shell: php artisan migrate --force
+      args:
+        chdir: /var/www/lim_kity
+
+    - name: Create Nginx site for lim_kity
+      copy:
+        dest: /etc/nginx/sites-available/lim_kity
+        content: |
+          server {
+              listen 80;
+              server_name _;
+
+              location /lim_kity/ {
+                  alias /var/www/lim_kity/public/;
+                  index index.php index.html;
+                  try_files $uri $uri/ /lim_kity/index.php?$query_string;
+              }
+
+              location ~ \.php$ {
+                  include snippets/fastcgi-php.conf;
+                  fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+              }
+          }
+      notify: Reload Nginx
+
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx/sites-available/lim_kity
+        dest: /etc/nginx/sites-enabled/lim_kity
+        state: link
+      notify: Reload Nginx
+
+    - name: Disable default Nginx site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: Reload Nginx
+
+  handlers:
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
