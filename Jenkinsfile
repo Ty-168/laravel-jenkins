@@ -3,6 +3,7 @@ pipeline {
     environment {
         BOT_TOKEN = credentials('telegram_bot_token')
         CHAT_ID = credentials('telegram_chat_id')
+        ANSIBLE_PASS = credentials('ansible_ssh_pass')
     }
     stages {
         stage('Checkout') {
