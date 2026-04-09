@@ -7,8 +7,17 @@
         name:
           - nginx
           - php8.4-fpm
+          - git
         state: present
         update_cache: yes
+
+    - name: Ensure deploy directory exists
+      file:
+        path: /var/www/lim_kity
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
 
     - name: Pull latest code from Git
       git:
