@@ -16,7 +16,7 @@ pipeline {
             steps {
                 // Running the Ansible playbook
                 withCredentials([string(credentialsId: 'ansible_ssh_pass', variable: 'ANSIBLE_PASS')]) {
-                    sh 'ansible-playbook -i [inventory.ini] [deploy.yml] -e ansible_ssh_pass=$ANSIBLE_PASS'
+                    sh 'ansible-playbook -i inventory.ini deploy.yml -e ansible_ssh_pass=$ANSIBLE_PASS'
                 }
             }
         }
