@@ -78,11 +78,12 @@
                   alias /var/www/lim_kity/public/;
                   index index.php index.html;
                   try_files $uri $uri/ /lim_kity/index.php?$query_string;
-              }
 
-              location ~ \.php$ {
-                  include snippets/fastcgi-php.conf;
-                  fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+                  location ~ \.php$ {
+                      include snippets/fastcgi-php.conf;
+                      fastcgi_param SCRIPT_FILENAME /var/www/lim_kity/public$fastcgi_script_name;
+                      fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+                  }
               }
           }
       notify: Reload Nginx
