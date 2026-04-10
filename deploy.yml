@@ -19,6 +19,16 @@
         group: www-data
         mode: '0755'
 
+    - name: Mark repo directory as safe for git
+      command: git config --global --add safe.directory /var/www/lim_kity
+
+    - name: Ensure repo ownership for git operations
+      file:
+        path: /var/www/lim_kity
+        state: directory
+        owner: root
+        group: root
+
     - name: Pull latest code from Git
       git:
         repo: 'https://github.com/Ty-168/laravel-jenkins.git'
