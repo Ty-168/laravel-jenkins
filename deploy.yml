@@ -74,7 +74,7 @@
               listen 80;
               server_name _;
 
-              location /lim_kity/ {
+              location /lim_kity {
                   alias /var/www/lim_kity/public/;
                   index index.php index.html;
                   try_files $uri $uri/ /lim_kity/index.php?$query_string;
