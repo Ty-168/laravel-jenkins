@@ -43,13 +43,17 @@
         group: www-data
         recurse: yes
 
+    - name: Check if Composer exists
+      stat:
+        path: /usr/local/bin/composer
+      register: composer_bin
+
     - name: Install Composer (if missing)
       get_url:
         url: https://getcomposer.org/download/latest-stable/composer.phar
         dest: /usr/local/bin/composer
         mode: '0755'
-      args:
-        creates: /usr/local/bin/composer
+      when: not composer_bin.stat.exists
 
     - name: Install Composer dependencies
       composer:
