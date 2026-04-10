@@ -35,10 +35,27 @@
         dest: /var/www/lim_kity
         version: main
 
+    - name: Ensure app ownership for web user
+      file:
+        path: /var/www/lim_kity
+        state: directory
+        owner: www-data
+        group: www-data
+        recurse: yes
+
+    - name: Install Composer (if missing)
+      get_url:
+        url: https://getcomposer.org/download/latest-stable/composer.phar
+        dest: /usr/local/bin/composer
+        mode: '0755'
+      args:
+        creates: /usr/local/bin/composer
+
     - name: Install Composer dependencies
       composer:
         command: install
         working_dir: /var/www/lim_kity
+      become_user: www-data
 
     - name: Run Migrations
       shell: php artisan migrate --force
